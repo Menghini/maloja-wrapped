@@ -12,6 +12,7 @@
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@mui/material": "^6.1.10",
+    "http-proxy-middleware": "^3.0.3",
     "next": "15.0.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

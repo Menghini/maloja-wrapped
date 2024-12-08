@@ -10,6 +10,15 @@ export default function Home() {
   const [apiLink, setApiLink] = useState('');
   const handleButtonClick = () => {
     console.log(apiLink);
+    fetch(`/api/scrobbles?in=today`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => console.log(data))
+      .catch(error => console.error('Error fetching data:', error));
   };
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
