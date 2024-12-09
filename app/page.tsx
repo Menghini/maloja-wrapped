@@ -8,15 +8,26 @@ export default function Home() {
   const [apiLink, setApiLink] = useState('');
   const [data, setData] = useState([]);
   const monthlyPlays = Array.from({ length: 12 }, (_, month) => {
-    const plays = data.filter((item: { time: number }) => {
+    const filteredData = data.filter((item: { time: number }) => {
       const date = new Date(item.time * 1000);
       return date.getFullYear() === 2024 && date.getMonth() === month;
-    }).length;
+    });
+
+    const originCounts = filteredData.reduce((acc: { [key: string]: number }, item: { origin: string }) => {
+      acc[item.origin] = (acc[item.origin] || 0) + 1;
+      return acc;
+    }, {});
+
+    const totalPlays = Object.values(originCounts).reduce((acc, count) => acc + count, 0);
+
     return {
       month: new Date(2024, month).toLocaleString('default', { month: 'long' }),
-      plays,
+      total: filteredData.length,
+      totalPlays,
+      ...originCounts,
     };
   });
+
 
   const handleButtonClick = () => {
     console.log(apiLink);
@@ -58,10 +69,12 @@ export default function Home() {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="plays" stroke="#8884d8" />
+          {Object.keys(monthlyPlays.reduce((acc, cur) => ({ ...acc, ...cur }), {})).filter(key => key !== 'month' && key !== 'total').map((key, index) => (
+          <Line key={index} type="monotone" dataKey={key} stroke={`#${Math.floor(Math.random()*16777215).toString(16)}`} />
+          ))}
         </LineChart>
       </ResponsiveContainer>
-      
+
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {/*This TextField does nothing right now. The URL right now is set in next.config.ts*/}
         <TextField
