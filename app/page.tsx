@@ -1,6 +1,6 @@
 'use client';
 import { Button, TextField } from '@mui/material';
-import { LineChart, Line } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useState } from 'react';
 import { Typography } from '@mui/material';
   
@@ -40,16 +40,28 @@ export default function Home() {
       <Typography variant="h6" component="p">
         Welcome to Maloja Wrapped! You have listened to {data.length} songs in 2024.
       </Typography>
-      <Typography variant="h6" component="p">
-      January - {monthlyPlays[0].plays} plays
+
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart
+          width={500}
+          height={300}
+          data={monthlyPlays}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="month" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="plays" stroke="#8884d8" />
+        </LineChart>
+      </ResponsiveContainer>
       
-      </Typography>
-      <Typography variant="h6" component="p">
-      February - plays
-      </Typography>
-      <LineChart width={400} height={400} data={monthlyPlays}>
-        <Line type="monotone" dataKey="plays" stroke="#8884d8" />
-      </LineChart>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {/*This TextField does nothing right now. The URL right now is set in next.config.ts*/}
         <TextField
