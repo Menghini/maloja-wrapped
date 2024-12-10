@@ -7,7 +7,14 @@ import { Button, TextField, Typography } from '@mui/material';
 export default function Home() {
   const [apiLink, setApiLink] = useState('');
   const [data, setData] = useState([]);
-  const monthlyPlays = Array.from({ length: 12 }, (_, month) => {
+  type MonthlyPlay = {
+    month: string;
+    total: number;
+    totalPlays: number;
+    [key: string]: number | string;
+  };
+
+  const monthlyPlays: MonthlyPlay[] = Array.from({ length: 12 }, (_, month) => {
     const filteredData = data.filter((item: { time: number }) => {
       const date = new Date(item.time * 1000);
       return date.getFullYear() === 2024 && date.getMonth() === month;
@@ -28,21 +35,40 @@ export default function Home() {
     };
   });
   const monthlyOption = {
+    tooltip: {
+      trigger: 'axis'
+    },
     xAxis: {
       type: 'category',
+      boundaryGap: false,
       data: monthlyPlays.map((item) => item.month),
+    },
+    legend: {
+      data: Object.keys(monthlyPlays[0] || {}).filter(key => key !== 'month' && key !== 'total' && key !== 'totalPlays')
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {}
+      }
     },
     yAxis: {
       type: 'value',
     },
-    series: [
-      {
-        data: monthlyPlays.map((item) => item.totalPlays),
-        type: 'line',
-      },
-    ],
+    series: Object.keys(monthlyPlays[0] || {}).map(origin => ({
+      name: origin,
+      type: 'line',
+      stack: 'Total',
+      data: monthlyPlays.map((item) => item[origin] || 0),
+    })),
   };
-  const hourlyPlays = Array.from({ length: 24 }, (_, hour) => {
+  type HourlyPlay = {
+    hour: string;
+    total: number;
+    totalPlays: number;
+    [key: string]: number | string;
+  };
+
+  const hourlyPlays: HourlyPlay[] = Array.from({ length: 24 }, (_, hour) => {
     const filteredData = data.filter((item: { time: number }) => {
       const date = new Date(item.time * 1000);
       return date.getFullYear() === 2024 && date.getHours() === hour;
@@ -63,19 +89,31 @@ export default function Home() {
     };
   });
   const hourlyOption = {
+    tooltip: {
+      trigger: 'axis'
+    },
     xAxis: {
       type: 'category',
+      boundaryGap: false,
       data: hourlyPlays.map((item) => item.hour),
+    },
+    legend: {
+      data: Object.keys(hourlyPlays[0] || {}).filter(key => key !== 'hour' && key !== 'total' && key !== 'totalPlays')
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {}
+      }
     },
     yAxis: {
       type: 'value',
     },
-    series: [
-      {
-        data: hourlyPlays.map((item) => item.totalPlays),
-        type: 'line',
-      },
-    ],
+    series: Object.keys(hourlyPlays[0] || {}).filter(key => key !== 'hour' && key !== 'total' && key !== 'totalPlays').map(origin => ({
+      name: origin,
+      type: 'line',
+      stack: 'Total',
+      data: hourlyPlays.map((item) => item[origin] || 0),
+    })),
   };
 
   const handleButtonClick = () => {
