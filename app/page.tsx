@@ -133,6 +133,111 @@ export default function Home() {
       .catch(error => console.error('Error fetching data:', error));
       console.log(monthlyPlays);
   };
+
+  const hours = [
+    '12a', '1a', '2a', '3a', '4a', '5a', '6a',
+    '7a', '8a', '9a', '10a', '11a',
+    '12p', '1p', '2p', '3p', '4p', '5p',
+    '6p', '7p', '8p', '9p', '10p', '11p'
+  ];
+
+  const days = [
+    'Saturday', 'Friday', 'Thursday',
+    'Wednesday', 'Tuesday', 'Monday', 'Sunday'
+  ];
+
+  const heatmapData = data.reduce((acc: number[][], item: { time: number }) => {
+    const date = new Date(item.time * 1000);
+    const day = date.getDay();
+    const hour = date.getHours();
+    const existing = acc.find(d => d[0] === day && d[1] === hour);
+    if (existing) {
+      existing[2]++;
+    } else {
+      acc.push([day, hour, 1]);
+    }
+    return acc;
+  }, []).map(item => [item[1], item[0], item[2] || '-']);
+
+  const heatmapOption = {
+    tooltip: {
+      position: 'top'
+    },
+    grid: {
+      height: '50%',
+      top: '10%'
+    },
+    xAxis: {
+      type: 'category',
+      data: hours,
+      splitArea: {
+        show: true
+      }
+    },
+    yAxis: {
+      type: 'category',
+      data: days,
+      splitArea: {
+        show: true
+      }
+    },
+    visualMap: {
+      min: 0,
+      max: 10,
+      calculable: true,
+      orient: 'horizontal',
+      left: 'center',
+      bottom: '15%'
+    },
+    series: [
+      {
+        name: 'Punch Card',
+        type: 'heatmap',
+        data: heatmapData,
+        label: {
+          show: true
+        },
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    ]
+  };
+
+  const calendarHeatmapData = data.reduce((acc: { [key: string]: number }, item: { time: number }) => {
+    const date = new Date(item.time * 1000);
+    const dateString = date.toISOString().split('T')[0];
+    acc[dateString] = (acc[dateString] || 0) + 1;
+    return acc;
+  }, {});
+
+  const calendarHeatmapOption = {
+    tooltip: {
+      position: 'top'
+    },
+    visualMap: {
+      min: 0,
+      max: 200,
+      calculable: true,
+      orient: 'horizontal',
+      left: 'center',
+      top: 'top'
+    },
+    calendar: {
+      range: '2024',
+      cellSize: ['auto', 20]
+    },
+    series: [
+      {
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: Object.entries(calendarHeatmapData).map(([date, count]) => [date, count])
+      }
+    ]
+  };
   
   return (
     <div>
@@ -140,13 +245,21 @@ export default function Home() {
         Welcome to Maloja Wrapped! You have listened to {data.length} songs in 2024.
       </Typography>
       <Typography variant="h6" component="p">
-          Play Count by Month
+        Play Count by Month
       </Typography>
       <ReactECharts option={monthlyOption} style={{height: '500px'}}/>
       <Typography variant="h6" component="p">
-          Play Count by Hour of Day
+        Play Count by Hour of Day
       </Typography>
       <ReactECharts option={hourlyOption} style={{height: '500px'}}/>
+      <Typography variant="h6" component="p">
+        Heat Map Of Listening Times By Day and Hour of Week
+      </Typography>
+      <ReactECharts option={heatmapOption} style={{height: '500px'}}/>
+      <Typography variant="h6" component="p">
+        Heat Map Of Listening Times By Day of Month
+      </Typography>
+      <ReactECharts option={calendarHeatmapOption} style={{height: '500px'}}/>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {/*This TextField does nothing right now. The URL right now is set in next.config.ts*/}
         <TextField
