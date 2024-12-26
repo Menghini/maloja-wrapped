@@ -7,13 +7,15 @@ export const getCalendarHeatMapOption = (data: any[]) => {
         return acc;
     }, {});
 
+    const max = Object.values(calendarHeatMapData).length > 0 ? Math.max(...Object.values(calendarHeatMapData)) : 0;
+
     return {
         tooltip: {
             position: 'top'
         },
         visualMap: {
             min: 0,
-            max: 200,
+            max: max,
             calculable: true,
             orient: 'horizontal',
             left: 'center',

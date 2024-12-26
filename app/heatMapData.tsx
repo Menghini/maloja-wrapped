@@ -25,6 +25,8 @@ export const getHeatMapOption = (data: any[]) => {
         return acc;
     }, []).map((item: any[]) => [item[1], item[0], item[2] || '-']);
 
+    const max = heatmapData.length > 0 ? Math.max(...heatmapData.map((item: any[]) => item[2])) : 0;
+    
     return {
         tooltip: {
             position: 'top'
@@ -49,7 +51,7 @@ export const getHeatMapOption = (data: any[]) => {
         },
         visualMap: {
             min: 0,
-            max: 10,
+            max: max,
             calculable: true,
             orient: 'horizontal',
             left: 'center',
