@@ -26,7 +26,7 @@ export default function Home() {
   const handleYearChange = (event: SelectChangeEvent<string>) => {
     const year = event.target.value as string;
     setSelectedYear(year); // Update selected year state
-    setApiLink(year === 'all' ? '/api/scrobbles?in=all' : `/api/scrobbles?in=${year}`);
+    setApiLink(year === 'alltime' ? '/api/scrobbles?in=alltime' : `/api/scrobbles?in=${year}`);
   };
   
 
@@ -59,7 +59,7 @@ export default function Home() {
           <InputLabel id="year-select-label">Year</InputLabel>
           <Select
             labelId="year-select-label"
-            value={selectedYear === 'all' ? currentYear.toString() : selectedYear} // Set value to selectedYear state or current year
+            value={selectedYear === 'alltime' ? currentYear.toString() : selectedYear} // Set value to selectedYear state or current year
             onChange={handleYearChange}
           >
             {years.map((year) => (
@@ -67,7 +67,7 @@ export default function Home() {
           {year}
               </MenuItem>
             ))}
-            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="alltime">All</MenuItem>
           </Select>
         </FormControl>
     </div>
