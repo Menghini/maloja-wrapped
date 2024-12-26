@@ -2,27 +2,37 @@
 import React from 'react';
 import { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { Link, Typography } from '@mui/material';
+import { Link, SelectChangeEvent, Typography } from '@mui/material';
 import { getMonthlyOption } from './monthlyPlays';
 import { getHourlyOption } from './hourlyPlays';
 import { getHeatMapOption } from './heatMapData';
 import { getCalendarHeatMapOption } from './calendarHeatMapData';
 import { MalojaURL } from '@/malojaWrapped.config';
-
-
+import { MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 
 export default function Home() {
-  const [apiLink] = useState('');
+  const [apiLink, setApiLink] = useState('');
   const [data, setData] = useState([]);
   const monthlyOption = getMonthlyOption(data);
   const hourlyOption = getHourlyOption(data);
   const heatMapOption = getHeatMapOption(data);
   const calendarHeatMapOption = getCalendarHeatMapOption(data);
   
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 2013 + 1 }, (_, i) => 2013 + i);
+  const [selectedYear, setSelectedYear] = useState<string>(currentYear.toString()); // Add state for selected year
+
+
+  const handleYearChange = (event: SelectChangeEvent<string>) => {
+    const year = event.target.value as string;
+    setSelectedYear(year); // Update selected year state
+    setApiLink(year === 'all' ? '/api/scrobbles?in=all' : `/api/scrobbles?in=${year}`);
+  };
+  
 
   React.useEffect(() => {
     console.log(apiLink);
-    fetch(`/api/scrobbles?in=year`)
+    fetch(`/api/scrobbles?in=${selectedYear}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -40,8 +50,27 @@ export default function Home() {
   return (
     <div>
       <Typography variant="h6" component="p">
-        Welcome to Maloja Wrapped! Showing data for <Link href={MalojaURL}>{MalojaURL}</Link> You have listened to {data.length} songs in 2024.
+        Welcome to Maloja Wrapped! Showing data for <Link href={MalojaURL}>{MalojaURL}</Link> You have listened to {data.length} songs in {selectedYear}.
       </Typography>
+    
+
+      <div>
+        <FormControl>
+          <InputLabel id="year-select-label">Year</InputLabel>
+          <Select
+            labelId="year-select-label"
+            value={selectedYear === 'all' ? currentYear.toString() : selectedYear} // Set value to selectedYear state or current year
+            onChange={handleYearChange}
+          >
+            {years.map((year) => (
+              <MenuItem key={year} value={year}>
+          {year}
+              </MenuItem>
+            ))}
+            <MenuItem value="all">All</MenuItem>
+          </Select>
+        </FormControl>
+    </div>
       <Typography variant="h6" component="p">
         Play Count by Month
       </Typography>

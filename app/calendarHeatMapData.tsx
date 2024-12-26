@@ -7,7 +7,7 @@ export const getCalendarHeatMapOption = (data: any[]) => {
         return acc;
     }, {});
 
-    const max = Object.values(calendarHeatMapData).length > 0 ? Math.max(...Object.values(calendarHeatMapData)) : 0;
+    const max = Object.values(calendarHeatMapData).length > 0 ? Math.max(...Object.values(calendarHeatMapData) as number[]) : 0;
 
     return {
         tooltip: {
@@ -27,6 +27,7 @@ export const getCalendarHeatMapOption = (data: any[]) => {
         },
         series: [
             {
+                name: 'Scrobbles',
                 type: 'heatmap',
                 coordinateSystem: 'calendar',
                 data: Object.entries(calendarHeatMapData).map(([date, count]) => [date, count])

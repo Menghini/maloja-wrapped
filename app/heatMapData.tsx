@@ -59,7 +59,7 @@ export const getHeatMapOption = (data: any[]) => {
         },
         series: [
             {
-                name: 'Punch Card',
+                name: 'Scrobbles',
                 type: 'heatmap',
                 data: heatmapData,
                 label: {
