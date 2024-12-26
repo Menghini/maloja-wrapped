@@ -1,0 +1,1 @@
+export const MalojaURL = 'https://maloja.krateng.ch/'; // Maloja URL. Example: 'https://maloja.krateng.ch/'

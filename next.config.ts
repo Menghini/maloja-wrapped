@@ -1,11 +1,13 @@
 import type { NextConfig } from "next";
+import { MalojaURL } from './malojaWrapped.config';
+
 
 module.exports = {
   async rewrites() {
     return [
       {
         source: "/api/:path*",
-        destination: "http://MalojaURLHere:42010/apis/mlj_1/:path*", // Proxy to Backend
+        destination: `${MalojaURL}/apis/mlj_1/:path*`, // Proxy to Backend
       },
     ];
   },

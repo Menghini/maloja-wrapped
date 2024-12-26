@@ -2,16 +2,17 @@
 import React from 'react';
 import { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { Button, TextField, Typography } from '@mui/material';
+import { Link, Typography } from '@mui/material';
 import { getMonthlyOption } from './monthlyPlays';
 import { getHourlyOption } from './hourlyPlays';
 import { getHeatMapOption } from './heatMapData';
 import { getCalendarHeatMapOption } from './calendarHeatMapData';
+import { MalojaURL } from '@/malojaWrapped.config';
 
 
 
 export default function Home() {
-  const [apiLink, setApiLink] = useState('');
+  const [apiLink] = useState('');
   const [data, setData] = useState([]);
   const monthlyOption = getMonthlyOption(data);
   const hourlyOption = getHourlyOption(data);
@@ -19,7 +20,7 @@ export default function Home() {
   const calendarHeatMapOption = getCalendarHeatMapOption(data);
   
 
-  const handleButtonClick = () => {
+  React.useEffect(() => {
     console.log(apiLink);
     fetch(`/api/scrobbles?in=year`)
       .then(response => {
@@ -34,12 +35,12 @@ export default function Home() {
         setData(trackList);
       })
       .catch(error => console.error('Error fetching data:', error));
-  };
+  }, [apiLink]);
   
   return (
     <div>
       <Typography variant="h6" component="p">
-        Welcome to Maloja Wrapped! You have listened to {data.length} songs in 2024.
+        Welcome to Maloja Wrapped! Showing data for <Link href={MalojaURL}>{MalojaURL}</Link> You have listened to {data.length} songs in 2024.
       </Typography>
       <Typography variant="h6" component="p">
         Play Count by Month
@@ -57,17 +58,6 @@ export default function Home() {
         Heat Map Of Listening Times By Day of Month
       </Typography>
       <ReactECharts option={calendarHeatMapOption} style={{height: '500px'}}/>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {/*This TextField does nothing right now. The URL right now is set in next.config.ts*/}
-        <TextField
-          id="outlined-basic"
-          label="API Link"
-          variant="outlined"
-          value={apiLink}
-          onChange={(e) => setApiLink(e.target.value)}
-        />
-        <Button variant="text" onClick={handleButtonClick}>Update</Button>
-      </div>
     </div>
   );
   
