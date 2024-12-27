@@ -1,5 +1,5 @@
 // calendarHeatmapData.tsx
-export const getCalendarHeatMapOption = (data: any[]) => {
+export const getCalendarHeatMapOption = (data: any[], year: any) => {
     const calendarHeatMapData = data.reduce((acc: { [key: string]: number }, item: { time: number }) => {
         const date = new Date(item.time * 1000);
         const dateString = date.toISOString().split('T')[0];
@@ -22,7 +22,7 @@ export const getCalendarHeatMapOption = (data: any[]) => {
             top: 'top'
         },
         calendar: {
-            range: '2024',
+            range: year,
             cellSize: ['auto', 20]
         },
         series: [

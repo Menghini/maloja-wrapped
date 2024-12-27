@@ -16,12 +16,10 @@ export default function Home() {
   const monthlyOption = getMonthlyOption(data);
   const hourlyOption = getHourlyOption(data);
   const heatMapOption = getHeatMapOption(data);
-  const calendarHeatMapOption = getCalendarHeatMapOption(data);
-  
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 2013 + 1 }, (_, i) => 2013 + i);
   const [selectedYear, setSelectedYear] = useState<string>(currentYear.toString()); // Add state for selected year
-
+  const calendarHeatMapOption = getCalendarHeatMapOption(data, selectedYear);
 
   const handleYearChange = (event: SelectChangeEvent<string>) => {
     const year = event.target.value as string;
